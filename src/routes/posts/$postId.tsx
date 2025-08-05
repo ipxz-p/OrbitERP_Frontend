@@ -1,3 +1,4 @@
+import Seo from '@/utils/seo/seo'
 import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/posts/$postId')({
@@ -11,5 +12,10 @@ export const Route = createFileRoute('/posts/$postId')({
 
 function RouteComponent() {
   const { postId } = Route.useLoaderData()
-  return <div>Hello "{postId}</div>
+  return (
+    <>
+      <Seo title={postId} />
+      <div>Hello "{postId}</div>
+    </>
+  )
 }
