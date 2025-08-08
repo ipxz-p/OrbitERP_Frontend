@@ -1,4 +1,4 @@
-import BaseButton from '../ui/button';
+import BaseButton from "../ui/base/button"
 
 const MainErrorFallback = () => {
   return (
@@ -7,10 +7,7 @@ const MainErrorFallback = () => {
       role="alert"
     >
       <h2 className="text-lg font-semibold">Ooops, something went wrong :( </h2>
-      <BaseButton
-        className="mt-4"
-        onClick={() => window.location.assign(window.location.origin)}
-      >
+      <BaseButton className="mt-4" onClick={() => window.location.assign(window.location.origin)}>
         Refresh
       </BaseButton>
     </div>

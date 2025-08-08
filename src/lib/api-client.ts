@@ -38,8 +38,9 @@ api.interceptors.response.use(
 
         return api.request(originalRequest)
       } catch (refreshError) {
-        window.location.href = "/login"
+        console.log(error)
         toast.error(error.message)
+        window.location.href = "/login"
         return Promise.reject(refreshError)
       }
     }
