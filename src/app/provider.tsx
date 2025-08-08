@@ -3,7 +3,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { ErrorBoundary } from "react-error-boundary"
 import { HelmetProvider } from "react-helmet-async"
 import { queryConfig } from "@/lib/react-query"
-import BaseSpinner from "@/components/ui/spinner"
+import BaseSpinner from "@/components/ui/base/spinner"
 import MainErrorFallback from "@/components/errors/main"
 
 type AppProviderProps = {
