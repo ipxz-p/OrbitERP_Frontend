@@ -1,9 +1,8 @@
-import type { BaseResponse } from "@/types/base.type"
 import type { Example, ExampleQuery } from "./type"
 import { api } from "@/lib/api-client"
 
 export default function ExampleApi() {
-  const getAll = (query?: ExampleQuery): Promise<BaseResponse<Array<Example>>> => {
+  const getAll = (query?: ExampleQuery): Promise<Example> => {
     return api.get("test", {
       params: query,
     })

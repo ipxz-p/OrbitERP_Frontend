@@ -8,7 +8,7 @@ export const exampleQueryOptions = {
     return queryOptions({
       queryKey: ["examples", params],
       queryFn: () => ExampleApi().getAll(params),
-      select: (data) => data.results,
+      select: (data) => data,
     })
   },
   detail: (id: number) => {
@@ -23,6 +23,7 @@ export const exampleQueryOptions = {
 export function useExample() {
   const api = ExampleApi()
   const queryClient = useQueryClient()
+
   function useExamples(params?: ExampleQuery) {
     return useQuery(exampleQueryOptions.all(params))
   }
@@ -35,7 +36,9 @@ export function useExample() {
     mutationFn: (payload: Partial<Example>) => api.post(payload),
     onSuccess: () => {
       toast.success("create success")
-      queryClient.invalidateQueries({ queryKey: ["examples"] })
+      queryClient.invalidateQueries({
+        queryKey: exampleQueryOptions.all().queryKey,
+      })
     },
   })
 
@@ -44,8 +47,12 @@ export function useExample() {
       api.put(id, payload),
     onSuccess: (_, { id }) => {
       toast.success("update success")
-      queryClient.invalidateQueries({ queryKey: ["example", id] })
-      queryClient.invalidateQueries({ queryKey: ["examples"] })
+      queryClient.invalidateQueries({
+        queryKey: exampleQueryOptions.detail(id).queryKey,
+      })
+      queryClient.invalidateQueries({
+        queryKey: exampleQueryOptions.all().queryKey,
+      })
     },
   })
 
@@ -53,7 +60,9 @@ export function useExample() {
     mutationFn: ({ id }: { id: number }) => api.remove(id),
     onSuccess: () => {
       toast.success("delete success")
-      queryClient.invalidateQueries({ queryKey: ["examples"] })
+      queryClient.invalidateQueries({
+        queryKey: exampleQueryOptions.all().queryKey,
+      })
     },
   })
 
