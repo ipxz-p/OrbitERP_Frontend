@@ -1,19 +1,22 @@
-import { createFileRoute } from "@tanstack/react-router"
+import { createFileRoute, useLoaderData } from "@tanstack/react-router"
 import Seo from "@/utils/seo/seo"
-import { useExample } from "@/features/example/hooks/useExample"
+import { exampleQueryOptions } from "@/features/example/hooks/useExample"
 
 export const Route = createFileRoute("/about")({
+  loader: ({ context: { queryClient } }) => {
+    return queryClient.ensureQueryData(exampleQueryOptions.all())
+  },
   component: RouteComponent,
 })
 
 function RouteComponent() {
-  const { useExamples } = useExample()
-  const { data } = useExamples()
+  const data = useLoaderData({ from: "/about" })
+
   return (
     <>
       <Seo title="About" />
       <div>Hello "/about"!</div>
-      {data}
+      {data.status}
     </>
   )
 }
