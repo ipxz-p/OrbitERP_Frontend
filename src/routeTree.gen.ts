@@ -11,9 +11,11 @@
 import { Route as rootRouteImport } from "./routes/__root"
 import { Route as LoginRouteImport } from "./routes/login"
 import { Route as AboutRouteImport } from "./routes/about"
+import { Route as AuthenticatedRouteImport } from "./routes/_authenticated"
 import { Route as IndexRouteImport } from "./routes/index"
 import { Route as PostsIndexRouteImport } from "./routes/posts/index"
 import { Route as PostsPostIdRouteImport } from "./routes/posts/$postId"
+import { Route as AuthenticatedDashboardRouteImport } from "./routes/_authenticated/dashboard"
 
 const LoginRoute = LoginRouteImport.update({
   id: "/login",
@@ -23,6 +25,10 @@ const LoginRoute = LoginRouteImport.update({
 const AboutRoute = AboutRouteImport.update({
   id: "/about",
   path: "/about",
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedRoute = AuthenticatedRouteImport.update({
+  id: "/_authenticated",
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -40,11 +46,17 @@ const PostsPostIdRoute = PostsPostIdRouteImport.update({
   path: "/posts/$postId",
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
+  id: "/dashboard",
+  path: "/dashboard",
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   "/": typeof IndexRoute
   "/about": typeof AboutRoute
   "/login": typeof LoginRoute
+  "/dashboard": typeof AuthenticatedDashboardRoute
   "/posts/$postId": typeof PostsPostIdRoute
   "/posts": typeof PostsIndexRoute
 }
@@ -52,27 +64,39 @@ export interface FileRoutesByTo {
   "/": typeof IndexRoute
   "/about": typeof AboutRoute
   "/login": typeof LoginRoute
+  "/dashboard": typeof AuthenticatedDashboardRoute
   "/posts/$postId": typeof PostsPostIdRoute
   "/posts": typeof PostsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   "/": typeof IndexRoute
+  "/_authenticated": typeof AuthenticatedRouteWithChildren
   "/about": typeof AboutRoute
   "/login": typeof LoginRoute
+  "/_authenticated/dashboard": typeof AuthenticatedDashboardRoute
   "/posts/$postId": typeof PostsPostIdRoute
   "/posts/": typeof PostsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: "/" | "/about" | "/login" | "/posts/$postId" | "/posts"
+  fullPaths: "/" | "/about" | "/login" | "/dashboard" | "/posts/$postId" | "/posts"
   fileRoutesByTo: FileRoutesByTo
-  to: "/" | "/about" | "/login" | "/posts/$postId" | "/posts"
-  id: "__root__" | "/" | "/about" | "/login" | "/posts/$postId" | "/posts/"
+  to: "/" | "/about" | "/login" | "/dashboard" | "/posts/$postId" | "/posts"
+  id:
+    | "__root__"
+    | "/"
+    | "/_authenticated"
+    | "/about"
+    | "/login"
+    | "/_authenticated/dashboard"
+    | "/posts/$postId"
+    | "/posts/"
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
   AboutRoute: typeof AboutRoute
   LoginRoute: typeof LoginRoute
   PostsPostIdRoute: typeof PostsPostIdRoute
@@ -93,6 +117,13 @@ declare module "@tanstack/react-router" {
       path: "/about"
       fullPath: "/about"
       preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    "/_authenticated": {
+      id: "/_authenticated"
+      path: ""
+      fullPath: ""
+      preLoaderRoute: typeof AuthenticatedRouteImport
       parentRoute: typeof rootRouteImport
     }
     "/": {
@@ -116,11 +147,31 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof PostsPostIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    "/_authenticated/dashboard": {
+      id: "/_authenticated/dashboard"
+      path: "/dashboard"
+      fullPath: "/dashboard"
+      preLoaderRoute: typeof AuthenticatedDashboardRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
   }
 }
 
+interface AuthenticatedRouteChildren {
+  AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+}
+
+const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
+  AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+}
+
+const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
+  AuthenticatedRouteChildren
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRoute: AuthenticatedRouteWithChildren,
   AboutRoute: AboutRoute,
   LoginRoute: LoginRoute,
   PostsPostIdRoute: PostsPostIdRoute,

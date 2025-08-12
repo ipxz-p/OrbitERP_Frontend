@@ -10,7 +10,6 @@ import { env } from "@/config/env"
 
 function authRequestInterceptor(config: InternalAxiosRequestConfig) {
   config.headers.Accept = "application/json"
-  // config.withCredentials = true;
   return config
 }
 
@@ -26,25 +25,24 @@ api.interceptors.response.use(
     return response.data
   },
   async (error: AxiosError) => {
-    console.log(error)
-    toast.error(error.message)
     const originalRequest = error.config as AxiosRequestConfig & { _retry?: boolean }
 
-    if (error.response?.status === 401 && !originalRequest._retry) {
+    if (
+      error.response?.status === 401 &&
+      !originalRequest._retry &&
+      originalRequest.url !== "/auth/refresh"
+    ) {
       originalRequest._retry = true
-
       try {
-        await api.post("/auth/refresh", {}, { withCredentials: true })
-
+        await api.post("/auth/refresh", {})
         return api.request(originalRequest)
       } catch (refreshError) {
-        console.log(error)
-        toast.error(error.message)
         window.location.href = "/login"
         return Promise.reject(refreshError)
       }
     }
 
+    toast.error(error.message)
     return Promise.reject(error)
   }
 )

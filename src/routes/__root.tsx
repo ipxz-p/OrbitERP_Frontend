@@ -3,11 +3,13 @@ import { TanStackRouterDevtools } from "@tanstack/react-router-devtools"
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
 import { Toaster } from "sonner"
 import type { QueryClient } from "@tanstack/react-query"
+import type { AuthState } from "@/context/auth"
 import { env } from "@/config/env"
 import Navbar from "@/components/navbar"
 
 export const Route = createRootRouteWithContext<{
   queryClient: QueryClient
+  auth: AuthState
 }>()({
   component: RootComponent,
   notFoundComponent: () => {
@@ -16,7 +18,7 @@ export const Route = createRootRouteWithContext<{
 })
 
 function RootComponent() {
-  const hideNavbarRoutes = ["/login"]
+  const hideNavbarRoutes = ["/login12"]
 
   const matchRoute = useMatchRoute()
 
