@@ -1,7 +1,7 @@
 import { queryOptions, useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
-import ExampleApi from "./api"
-import type { Example, ExampleQuery } from "./type"
+import ExampleApi from "../api"
+import type { Example, ExampleQuery } from "../type"
 
 export const exampleQueryOptions = {
   all: (params?: ExampleQuery) => {

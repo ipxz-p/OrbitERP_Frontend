@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router"
 import Seo from "@/utils/seo/seo"
-import { useExample } from "@/features/example/hook"
+import { useExample } from "@/features/example/hooks/useExample"
 
 export const Route = createFileRoute("/about")({
   component: RouteComponent,
