@@ -1,25 +1,28 @@
-import { Link, Outlet, createRootRoute } from "@tanstack/react-router"
+import { Outlet, createRootRoute, useMatchRoute } from "@tanstack/react-router"
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools"
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
 import { Toaster } from "sonner"
 import { env } from "@/config/env"
+import Navbar from "@/components/navbar"
 
 export const Route = createRootRoute({
-  component: () => (
+  component: RootComponent,
+  notFoundComponent: () => {
+    return <p>Page not found</p>
+  },
+})
+
+function RootComponent() {
+  const hideNavbarRoutes = ["/login"]
+
+  const matchRoute = useMatchRoute()
+
+  const matchedHideNavRoutes = hideNavbarRoutes.some((route) => matchRoute({ to: route }))
+
+  return (
     <>
       <Toaster position="top-right" richColors closeButton />
-      <div className="p-2 flex gap-2">
-        <Link to="/" className="[&.active]:font-bold">
-          Home
-        </Link>{" "}
-        <Link to="/about" className="[&.active]:font-bold">
-          About
-        </Link>
-        <Link to="/posts" className="[&.active]:font-bold">
-          posts
-        </Link>
-      </div>
-      <hr />
+      {!matchedHideNavRoutes && <Navbar />}
       <Outlet />
       {env.APP_ENVIRONMENT === "development" && (
         <>
@@ -28,8 +31,5 @@ export const Route = createRootRoute({
         </>
       )}
     </>
-  ),
-  notFoundComponent: () => {
-    return <p>Page not found {"qwe"}</p>
-  },
-})
+  )
+}
